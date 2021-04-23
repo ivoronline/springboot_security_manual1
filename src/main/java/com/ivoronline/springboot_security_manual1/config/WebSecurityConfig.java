@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
@@ -29,16 +31,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected UserDetailsService userDetailsService() {
 
-    //CREATE USER
-    UserDetails myuser = User.withDefaultPasswordEncoder()
-      .username("myuser")
-      .password("myuserpassword")
-      .roles   ("USER")
-      .build();
+    //CREATE USERS
+    UserDetails myuser  = User.withUsername("myuser" ).password("myuserpassword" ).roles("USER" ).build();
+    UserDetails myadmin = User.withUsername("myadmin").password("myadminpassword").roles("ADMIN").build();
 
-    //STORE USER
-    return new InMemoryUserDetailsManager(myuser);
+    //STORE USERS
+    return new InMemoryUserDetailsManager(myuser, myadmin);
 
+  }
+
+  //=======================================================================
+  // PASSWORD ENCODER
+  //=======================================================================
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return NoOpPasswordEncoder.getInstance();
   }
 
   //=================================================================
